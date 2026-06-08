@@ -8,5 +8,5 @@ function sub(a,b){
    addFn: add,
     subFn :sub
  }  ;
-//  exports.add=(a,b)=> a+b; 
-//  exports.sub=(a,b)=> a-b;    
+ exports.add=(a,b)=> a+b; 
+ exports.sub=(a,b)=> a-b;    
