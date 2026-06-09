@@ -60,7 +60,7 @@ app.route("/api/users/:id")
     if(!user) return res.status(404).json({error:"User not found"});
     return res.json(user);
 }).patch(async(req,res)=>{ 
-    //await User.findByIdAndUpdate(req.params.id,{lastName:"changed"});
+    await User.findByIdAndUpdate(req.params.id,{lastName:"changed"});
     const id=Number(req.params.id);
     const body=req.body;
     const userId=users.findIndex((user)=>user.id===id);
