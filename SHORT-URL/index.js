@@ -7,8 +7,25 @@ const PORT=8001;
 connectToMongoDb("mongodb://localhost:27017/short-url")
 .then(()=> console.log("MongoDb connected"));
 app.use(express.json());
+app.get("/test",async(req,res)=>{
+    const allUrls=await URL.find({});
+    return res.end(
+        `
+        <html>
+        <head>
+        <body>
+        <ol>
+        ${allUrls.map(url=> `<li>${url.shortId}-${url.redirectURL}-${url.visitHistory.length}</li>`).join(" ")};
+        </ol>
+        </body>
+        </head>
+        </html>
+        `
+    )
+})
+
 app.use("/url",urlRoute);
- app.get("/:shortId",async(req,res)=>{
+ app.get("/url/:shortId",async(req,res)=>{
     const shortId=req.params.shortId;
     const entry=await URL.findOneAndUpdate(
         {
