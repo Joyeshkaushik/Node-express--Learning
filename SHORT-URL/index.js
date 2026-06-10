@@ -1,27 +1,23 @@
 const express=require("express");
 const URL=require("./models/url");
+const path=require('path');
  const {connectToMongoDb} =require ("./connect");
 const app=express();
 const urlRoute=require("./routes/url");
 const PORT=8001;
 connectToMongoDb("mongodb://localhost:27017/short-url")
 .then(()=> console.log("MongoDb connected"));
+
+
+app.set("view engine","ejs");
+app.set("views",path.resolve("./views"));
 app.use(express.json());
 app.get("/test",async(req,res)=>{
     const allUrls=await URL.find({});
-    return res.end(
-        `
-        <html>
-        <head>
-        <body>
-        <ol>
-        ${allUrls.map(url=> `<li>${url.shortId}-${url.redirectURL}-${url.visitHistory.length}</li>`).join(" ")};
-        </ol>
-        </body>
-        </head>
-        </html>
-        `
-    )
+    return res.render("home",{
+        urls:allUrls,
+        
+    });
 })
 
 app.use("/url",urlRoute);
