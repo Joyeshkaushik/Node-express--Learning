@@ -8,7 +8,7 @@ const staticRoute=require("./routes/staticRouter");
 const urlRoute=require("./routes/url");
 const userRoute=require("./routes/user");
 const PORT=8001;
-const {restrictToLoggedinUserOnly,checkAuth}=require("./middlewares/auth");
+const {restrictTo,checkForAuthentication}=require("./middlewares/auth");
 connectToMongoDb("mongodb://localhost:27017/short-url")
 .then(()=> console.log("MongoDb connected"));
 
@@ -18,12 +18,13 @@ app.set("views",path.resolve("./views"));
 app.use(express.json()); 
 app.use(express.urlencoded({extended:false}));
 app.use(cookieParser());
+app.use(checkForAuthentication);
 
 
 
-app.use("/url",restrictToLoggedinUserOnly,urlRoute);
+app.use("/url",restrictTo(["NORMAL","ADMIN"]),urlRoute);
 app.use("/user",userRoute);
-app.use("/",checkAuth,staticRoute);
+app.use("/",staticRoute);
  app.get("/url/:shortId",async(req,res)=>{
     const shortId=req.params.shortId;
     const entry=await URL.findOneAndUpdate(
